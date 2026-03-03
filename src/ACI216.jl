@@ -36,6 +36,7 @@ using CSV
 using DataFrames
 using Interpolations
 using Printf
+using StructTypes
 
 include("temperature.jl")
 include("fire_resistance.jl")

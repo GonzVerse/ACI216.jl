@@ -9,7 +9,7 @@
 # Cover is measured from the fire-exposed surface to the nearest surface of
 # the longitudinal reinforcement (per Table 4.3.1.1 footnote).
 #
-# Supported aggregate types: :siliceous, :carbonate, :semi_lightweight, :lightweight
+# Supported aggregate types: "siliceous", "carbonate", "semi_lightweight", "lightweight"
 # Supported durations (min):  60, 90, 120, 180, 240
 #
 # Verified against ACI 216.1M-14 PDF (scanned original).
@@ -22,11 +22,11 @@
 # Table 4.2 — Minimum Equivalent Thickness (mm)
 # -----------------------------------------------------------------------------
 
-const _MIN_THICKNESS_MM = Dict{Symbol,Dict{Int,Int}}(
-    :siliceous        => Dict(60 => 90,  90 => 110, 120 => 125, 180 => 155, 240 => 175),
-    :carbonate        => Dict(60 => 80,  90 => 100, 120 => 115, 180 => 145, 240 => 170),
-    :semi_lightweight => Dict(60 => 70,  90 => 85,  120 => 95,  180 => 115, 240 => 135),
-    :lightweight      => Dict(60 => 65,  90 => 80,  120 => 90,  180 => 110, 240 => 130),
+const _MIN_THICKNESS_MM = Dict{String,Dict{Int,Int}}(
+    "siliceous"        => Dict(60 => 90,  90 => 110, 120 => 125, 180 => 155, 240 => 175),
+    "carbonate"        => Dict(60 => 80,  90 => 100, 120 => 115, 180 => 145, 240 => 170),
+    "semi_lightweight" => Dict(60 => 70,  90 => 85,  120 => 95,  180 => 115, 240 => 135),
+    "lightweight"      => Dict(60 => 65,  90 => 80,  120 => 90,  180 => 110, 240 => 130),
 )
 
 
@@ -35,11 +35,11 @@ const _MIN_THICKNESS_MM = Dict{Symbol,Dict{Int,Int}}(
 # All aggregate types: 20 mm for all ratings 1 through 4 hours.
 # -----------------------------------------------------------------------------
 
-const _MIN_COVER_RESTRAINED_MM = Dict{Symbol,Dict{Int,Int}}(
-    :siliceous        => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
-    :carbonate        => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
-    :semi_lightweight => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
-    :lightweight      => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
+const _MIN_COVER_RESTRAINED_MM = Dict{String,Dict{Int,Int}}(
+    "siliceous"        => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
+    "carbonate"        => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
+    "semi_lightweight" => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
+    "lightweight"      => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 20, 240 => 20),
 )
 
 
@@ -47,14 +47,14 @@ const _MIN_COVER_RESTRAINED_MM = Dict{Symbol,Dict{Int,Int}}(
 # Table 4.3.1.1 — Minimum Cover (mm), Unrestrained
 # -----------------------------------------------------------------------------
 
-const _MIN_COVER_UNRESTRAINED_MM = Dict{Symbol,Dict{Int,Int}}(
-    :siliceous        => Dict(60 => 20, 90 => 20, 120 => 25, 180 => 30, 240 => 40),
-    :carbonate        => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 30, 240 => 30),
-    :semi_lightweight => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 30, 240 => 30),
-    :lightweight      => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 30, 240 => 30),
+const _MIN_COVER_UNRESTRAINED_MM = Dict{String,Dict{Int,Int}}(
+    "siliceous"        => Dict(60 => 20, 90 => 20, 120 => 25, 180 => 30, 240 => 40),
+    "carbonate"        => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 30, 240 => 30),
+    "semi_lightweight" => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 30, 240 => 30),
+    "lightweight"      => Dict(60 => 20, 90 => 20, 120 => 20, 180 => 30, 240 => 30),
 )
 
-const _VALID_AGGREGATE_TYPES = (:siliceous, :carbonate, :semi_lightweight, :lightweight)
+const _VALID_AGGREGATE_TYPES = ("siliceous", "carbonate", "semi_lightweight", "lightweight")
 
 
 # -----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ description.
 """
 struct FireResistanceRatingResult
     # Inputs
-    aggregate_type        :: Symbol
+    aggregate_type        :: String
     restrained            :: Bool
     duration_min          :: Int
     duration_hr           :: Float64
@@ -102,6 +102,10 @@ struct FireResistanceResults
     ratings        :: Vector{FireResistanceRatingResult}
 end
 
+# Allow JSON3 to serialize these structs directly as JSON objects
+StructTypes.StructType(::Type{FireResistanceRatingResult}) = StructTypes.Struct()
+StructTypes.StructType(::Type{FireResistanceResults})       = StructTypes.Struct()
+
 
 # -----------------------------------------------------------------------------
 # Unit helper (internal)
@@ -126,8 +130,8 @@ Both criteria from the standard must be satisfied for a rating to pass:
 2. Clear cover     ≥  Table 4.3.1.1 minimum cover
 
 # Arguments
-- `aggregate_type::Symbol`     — one of `:siliceous`, `:carbonate`,
-  `:semi_lightweight`, `:lightweight`.
+- `aggregate_type::String`     — one of `"siliceous"`, `"carbonate"`,
+  `"semi_lightweight"`, `"lightweight"`.
 - `restrained::Bool`           — `true` for restrained per Table 4.3.1;
   `false` for unrestrained (conservative default).
 - `slab_thickness_mm::Real`    — total slab thickness in mm.  For solid slabs
@@ -143,12 +147,12 @@ Use `print_fire_resistance_summary` to display.
 
 # Example
 ```julia
-res = fire_resistance_rating(:carbonate, false, 127.0, 25.0; ratings=[60, 120, 180])
+res = fire_resistance_rating("carbonate", false, 127.0, 25.0; ratings=[60, 120, 180])
 print_fire_resistance_summary(res)
 ```
 """
 function fire_resistance_rating(
-    aggregate_type::Symbol,
+    aggregate_type::String,
     restrained::Bool,
     slab_thickness_mm::Real,
     clear_cover_mm::Real;
@@ -287,12 +291,12 @@ The largest passing duration in `ratings`, or `nothing`.
 
 # Example
 ```julia
-m = maximum_fire_rating(:carbonate, false, 150.0, 30.0)
+m = maximum_fire_rating("carbonate", false, 150.0, 30.0)
 # → 240 (or smaller, depending on cover)
 ```
 """
 function maximum_fire_rating(
-    aggregate_type    :: Symbol,
+    aggregate_type    :: String,
     restrained        :: Bool,
     slab_thickness_mm :: Real,
     clear_cover_mm    :: Real;
