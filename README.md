@@ -2,19 +2,37 @@
 
 A Julia package for concrete fire resistance checks per **ACI/TMS 216.1M-14**.
 
+## Installation
+
+This package is not yet registered in the Julia General Registry. Add it directly from GitHub:
+
+```julia
+using Pkg
+Pkg.add(url = "https://github.com/runtosolve/ACI216.jl")
+```
+
+To add it to an existing project (e.g. SMI-Backend):
+
+```julia
+# From inside the project directory:
+using Pkg
+Pkg.activate(".")
+Pkg.add(url = "https://github.com/runtosolve/ACI216.jl")
+```
+
 ## What it does
 
-- **Temperature interpolation** — estimates the temperature at any depth inside a concrete slab exposed to a standard ASTM E119 fire, based on digitized ACI 216.1M-14 test curves for carbonate, siliceous, and semi-lightweight aggregate concrete.
+- **Temperature interpolation** — estimates the temperature at any distance from the fire-exposed surface inside a concrete slab exposed to a standard ASTM E119 fire, based on digitized ACI 216.1M-14 test curves for carbonate, siliceous, and semi-lightweight aggregate concrete.
 - **Fire resistance rating check** — evaluates whether a slab passes the prescriptive ACI 216.1M-14 requirements (Table 4.2 minimum thickness, Table 4.3.1.1 minimum cover) for ratings from 1 to 4 hours.
 
 ## Usage
 
-### Temperature at a depth
+### Temperature at a distance from the fire-exposed surface
 
 ```julia
 using ACI216
 
-# Temperature (°F) at 50 mm depth in a carbonate slab after 120 minutes
+# Temperature (°F) at 50 mm from the fire-exposed surface in a carbonate slab after 120 minutes
 T = temperature_within_slab(120, 50, "carbonate")
 ```
 
@@ -26,16 +44,16 @@ Supported concrete types: `"carbonate"`, `"siliceous"`, `"semi_lightweight"`
 using ACI216
 
 # Check a 150 mm carbonate slab with 25 mm cover, unrestrained
-res = fire_resistance_rating(:carbonate, false, 150.0, 25.0)
+res = fire_resistance_rating("carbonate", false, 150.0, 25.0)
 print_fire_resistance_summary(res)
 ```
 
-Arguments: `aggregate_type` (Symbol), `restrained` (Bool), `slab_thickness_mm`, `clear_cover_mm`
+Arguments: `aggregate_type` (String), `restrained` (Bool), `slab_thickness_mm`, `clear_cover_mm`
 
 To check specific ratings only:
 
 ```julia
-res = fire_resistance_rating(:siliceous, true, 125.0, 20.0; ratings=[60, 120, 180])
+res = fire_resistance_rating("siliceous", true, 125.0, 20.0; ratings=[60, 120, 180])
 ```
 
 ### Material strength reduction
@@ -65,3 +83,4 @@ Temperatures outside the data range are clamped to the nearest endpoint (no extr
 # Fraction of fy remaining at 1000 °F for hot-rolled flexural reinforcement
 f = steel_strength_reduction(1000.0)
 ```
+

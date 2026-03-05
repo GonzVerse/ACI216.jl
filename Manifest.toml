@@ -2,10 +2,10 @@
 
 julia_version = "1.12.0"
 manifest_format = "2.0"
-project_hash = "d42ad4008fdd37d173d765150bc330014bdd128c"
+project_hash = "907424cdaf1aa6c8bd95ef93889477f09ef51e7b"
 
 [[deps.ACI216]]
-deps = ["CSV", "DataFrames", "Interpolations"]
+deps = ["CSV", "DataFrames", "Interpolations", "Printf", "StructTypes"]
 path = "."
 uuid = "9b36f528-c610-413a-8a0c-c354fc8dc317"
 version = "0.1.0"
@@ -362,6 +362,12 @@ deps = ["PrecompileTools"]
 git-tree-sha1 = "a3c1536470bf8c5e02096ad4853606d7c8f62721"
 uuid = "892a3eda-7b42-436c-8928-eab12a02cf0e"
 version = "0.4.2"
+
+[[deps.StructTypes]]
+deps = ["Dates", "UUIDs"]
+git-tree-sha1 = "159331b30e94d7b11379037feeb9b690950cace8"
+uuid = "856f2bd8-1eba-4b0a-8007-ebc267875bd4"
+version = "1.11.0"
 
 [[deps.StyledStrings]]
 uuid = "f489334b-da3d-4c2e-b8f0-e476e12c162b"

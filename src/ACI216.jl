@@ -8,8 +8,9 @@
 # Exports:
 #   temperature_within_slab         — 2D linear interpolation of ACI figure data
 #   temperature_profile             — vectorised temperature at multiple depths
-#   fire_resistance_rating          — prescriptive table check (Table 4.2 / 4.3.1.1)
+#   fire_resistance_rating          — prescriptive table check (Table 4.2 / 4.3.1.1 / ACI 318M-14)
 #   maximum_fire_rating             — highest fire rating a slab achieves
+#   equivalent_thickness            — equivalent thickness for ribbed/undulating slabs (§4.2.4)
 #   FireResistanceResults           — result container type
 #   FireResistanceRatingResult      — per-rating result type
 #   print_fire_resistance_summary   — formatted console output (fire resistance)
@@ -36,6 +37,7 @@ using CSV
 using DataFrames
 using Interpolations
 using Printf
+using StructTypes
 
 include("temperature.jl")
 include("fire_resistance.jl")
@@ -45,6 +47,7 @@ export temperature_within_slab,
        temperature_profile,
        fire_resistance_rating,
        maximum_fire_rating,
+       equivalent_thickness,
        FireResistanceResults,
        FireResistanceRatingResult,
        print_fire_resistance_summary,
